@@ -1,6 +1,6 @@
 # Case Studies
 
-Real-world examples demonstrate how organizations of different sizes and domains choose and operate monorepo, multi-repo, or hybrid strategies. These case studies illustrate the trade-offs, tooling decisions, and lessons learned from production use.
+Real-world examples demonstrate how organizations of different sizes and domains choose and operate monorepo, multi-repo, or hybrid strategies. These case studies illustrate the trade-offs, tooling decisions, and lessons learned from production use. Use them as patterns to compare against your own context rather than prescriptions.
 
 ## Monorepo Case Studies
 
@@ -102,6 +102,37 @@ Real-world examples demonstrate how organizations of different sizes and domains
 - Remote caching is essential for CI/CD performance
 - Clear project boundaries and ownership prevent conflicts
 - Documentation and onboarding materials are critical
+
+---
+
+### Internal Enterprise Monorepo: Line-of-Business Applications
+
+**Context:**
+- Mid-size enterprise with 10–50 line-of-business apps
+- Mix of frontend, backend, and shared domain libraries
+- Central platform team plus multiple feature teams
+
+**Strategy and Tooling:**
+- Monorepo with `apps/`, `services/`, and `libs/` structure
+- Nx, Turborepo, or similar for task orchestration
+- Shared CI/CD templates for builds, tests, and deployments
+- Per-project metadata feeding a service catalog (see `../governance/catalog-and-metadata.md`)
+
+**Benefits:**
+- Easier to enforce standards (security, logging, observability)
+- Shared domain and UI libraries reduce duplication
+- Cross-cutting changes (for example, auth flows) are easier to implement
+- Central visibility into what exists and who owns it
+
+**Challenges:**
+- Requires clear ownership and review rules to avoid “drive-by edits”
+- Build and test performance must be engineered (affected detection, caching)
+- Some teams may feel constrained by shared tooling
+
+**Lessons Learned:**
+- Start with a well-documented structure and ownership model
+- Invest early in CI performance and developer tooling
+- Use project metadata and catalogs to reduce administrative overhead
 
 ---
 
@@ -358,4 +389,3 @@ Based on these case studies, consider the following when choosing a strategy:
 - Migration between strategies is in progress
 
 The right choice depends on your organization's size, structure, culture, and technical requirements. These case studies show that both approaches can succeed at scale with appropriate tooling and processes.
-
