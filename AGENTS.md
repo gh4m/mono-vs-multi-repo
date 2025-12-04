@@ -7,11 +7,13 @@ This repository documents and compares monorepo and multi-repo architectural pat
 - Place primary content under `docs/`, grouping by topic (for example, `docs/monorepo/`, `docs/multi-repo/`, `docs/case-studies/`).
 - Put reusable diagrams, images, and charts in `assets/` or `docs/assets/` and use descriptive, kebab-case filenames (for example, `monorepo-ci-flow.png`).
 - Store runnable code samples in `examples/<language>/` and keep them self-contained with a short README.
+- Use existing top-level topics (`monorepo`, `multi-repo`, `tooling`, `ci-cd`, `migration`, `governance`, `case-studies`) when adding new docs rather than inventing parallel structures.
 
 ## Build, Test, and Development Commands
 
 - Preview Markdown locally using your editor’s Markdown preview or a static viewer (for example, `markdown foo.md` if available).
 - When possible, run Markdown linting and formatting before opening a PR (for example, `markdownlint '**/*.md'` or `prettier --check '**/*.md'` if installed globally or in your environment).
+- Do not introduce heavy documentation frameworks (for example, Docusaurus, MkDocs) or build tooling unless explicitly requested; keep the project text-first.
 
 ## Coding Style & Naming Conventions
 
