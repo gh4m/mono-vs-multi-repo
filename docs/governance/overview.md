@@ -2,7 +2,7 @@
 
 As codebases grow—whether in monorepos or across many repositories—organizations need systematic approaches to answer fundamental questions: What exists? Who owns it? What depends on what? Where is it deployed? Without clear governance and reporting practices, teams lose visibility, duplicate work, and struggle to assess the impact of changes.
 
-This document provides practical patterns for governance and reporting in both monorepo and multi-repo contexts.
+This document provides practical patterns for governance and reporting in both monorepo and multi-repo contexts. Examples and snippets are illustrative only; adapt them to your stack, tools, and organizational constraints.
 
 ## Why Governance Matters
 
@@ -544,4 +544,3 @@ For specific governance topics, see:
 - `dependencies-and-impact.md` - Dependency tracking and impact analysis
 - `release-and-versioning.md` - Versioning strategies and release governance
 - `environment-status.md` - Deployment tracking and environment status
-
