@@ -1,10 +1,10 @@
 # CI/CD and Build Strategies
 
-How you structure your repositories has a direct impact on CI/CD pipeline design, build performance, and deployment workflows. Monorepos and multi-repos require different approaches to achieve fast, reliable builds at scale.
+Repository structure has a direct impact on CI/CD pipelines, build performance, and deployment workflows. Monorepos and multi-repos require different strategies to keep feedback fast while preserving reliability and governance.
 
 ## Pipeline Design Patterns for Monorepos
 
-Monorepo CI/CD pipelines must handle multiple projects in a single repository while avoiding unnecessary work.
+Monorepo pipelines must handle multiple projects in a single repository while avoiding unnecessary work and preserving clear ownership.
 
 ### Affected Project Detection
 
@@ -19,11 +19,11 @@ The core challenge is determining what changed and what needs to be rebuilt or r
   run: npx nx affected:test --base=origin/main --head=HEAD
 ```
 
-Most monorepo tools (Nx, Turborepo, Bazel) provide dependency graph analysis to compute affected projects based on git diffs.
+Most monorepo tools (Nx, Turborepo, Bazel) provide dependency graph analysis to compute affected projects based on git diffs. This is usually the foundation for keeping pipelines fast as the repo grows.
 
 ### Matrix or Parallel Job Strategies
 
-Once affected projects are identified, pipelines typically run jobs in parallel:
+Once affected projects are identified, pipelines typically run jobs in parallel, often grouping work by app, service, or domain:
 
 ```yaml
 # Example: Dynamic matrix based on affected projects
@@ -48,7 +48,7 @@ jobs:
 
 ### Single Pipeline, Multiple Stages
 
-Another pattern uses a single pipeline with conditional stages:
+Another pattern uses a single pipeline with conditional stages keyed off path or project metadata:
 
 ```yaml
 stages:
@@ -71,13 +71,14 @@ build-web-app:
 
 Monorepos often need to deploy multiple services or apps from a single commit:
 
-- Deploy all affected services in dependency order
-- Use feature flags to decouple deployment from release
-- Tag specific projects for independent deployments (for example, `web-app-v1.2.3`, `api-v2.0.1`)
+- Deploy all affected services in dependency order.
+- Use feature flags to decouple deployment from release.
+- Tag specific projects for independent deployments (for example, `web-app@1.2.3`, `api@2.0.1`).
+- Emit deployment events to an external system so `docs/governance/environment-status.md` can be kept accurate.
 
 ## Pipeline Design Patterns for Multi-Repos
 
-Multi-repo CI/CD pipelines are simpler per repository but require coordination across repositories.
+Multi-repo pipelines are simpler per repository but require coordination across repositories when changes span boundaries.
 
 ### Independent Pipelines
 
@@ -98,9 +99,9 @@ jobs:
 ```
 
 Benefits:
-- Simple, easy to understand
-- Each team controls their own pipeline
-- No cross-project complexity
+- Simple and easy to understand.
+- Each team controls their own pipeline and stack.
+- No cross-project build graph to maintain.
 
 ### Cross-Repo Coordination
 
@@ -136,9 +137,11 @@ Challenges arise when changes span multiple repositories:
 
 Multi-repo setups need separate integration test infrastructure:
 
-- End-to-end test repositories that pull in multiple services
-- Contract testing (for example, Pact) to verify API compatibility
-- Staging environments that deploy from multiple repositories
+- End-to-end test repositories that pull in multiple services.
+- Contract testing (for example, Pact) to verify API compatibility.
+- Staging environments that deploy from multiple repositories.
+
+In practice, many organizations combine contract tests with a small number of higher-fidelity end-to-end suites to keep feedback timely.
 
 ## Caching, Artifact Reuse, and Incremental Builds
 
@@ -170,9 +173,9 @@ nx build my-app --configuration=production
 ```
 
 Benefits:
-- Never rebuild unchanged projects
-- Cache hits across team members and CI
-- Dramatic speedups (10x+ improvements common)
+- Avoid rebuilding unchanged projects.
+- Share cache hits across team members and CI.
+- Reduce cost and time for full-graph checks (for example, nightly “all projects” pipelines).
 
 ### Multi-Repo Caching
 
@@ -196,8 +199,19 @@ RUN npm ci
 ```
 
 **Published artifacts:**
-- Build once, publish to registry (npm, Docker Hub, Artifactory)
-- Consumers download pre-built artifacts instead of rebuilding from source
+- Build once, publish to a registry (npm, Docker Hub, Artifactory).
+- Consumers download pre-built artifacts instead of rebuilding from source.
+
+## Connecting CI/CD to Governance
+
+Regardless of repository strategy, mature setups feed CI/CD data into governance and reporting:
+
+- Tag builds and deployments with artifact name, version, and environment.
+- Emit deployment events so environment status can be queried centrally.
+- Use CI to update catalogs and dependency graphs (see `../governance/catalog-and-metadata.md` and `../governance/environment-status.md`).
+
+This turns pipelines from “just build and deploy” systems into reliable sources of truth about what is running where.
+
 
 ## Common Pitfalls and Scaling Strategies
 
@@ -267,4 +281,3 @@ RUN npm ci
 - Each repository deploys independently with clear versioning
 
 Both approaches can scale effectively with the right investment in tooling and processes.
-
