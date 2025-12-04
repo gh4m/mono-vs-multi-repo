@@ -30,3 +30,7 @@ This repository documents and compares monorepo and multi-repo architectural pat
 - For pull requests, include: a short summary, the motivation or problem, key changes by section or file, and any follow-up work or open questions.
 - Link to related issues or discussions when relevant and add screenshots for visual changes (diagrams, architecture overviews, etc.).
 
+## Agent-Specific Instructions
+
+- Claude-based tools should review `CLAUDE.md` before making changes.
+- GPT-based tools should review this `AGENTS.md` file and keep new content aligned with the structure described in `README.md`.
